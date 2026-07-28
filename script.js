@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("signupForm");
   const dateInput = document.getElementById("date");
   const courseSelect = document.getElementById("course");
+  const timeSelect = document.getElementById("time");
   const coursePreview = document.getElementById("coursePreview");
 
   if (dateInput) {
@@ -11,6 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const dd = String(today.getDate()).padStart(2, "0");
     dateInput.min = `${yyyy}-${mm}-${dd}`;
   }
+
+  const updateTimeOptions = () => {
+    if (!timeSelect) {
+      return;
+    }
+
+    const selectedCourse = courseSelect?.value || "";
+    const allowedTimes = selectedCourse === "進階款四面花磚燈"
+      ? ["10:30開始"]
+      : selectedCourse === "小型燭檯燈"
+        ? ["13:30開始"]
+        : ["10:30開始", "13:30開始"];
+
+    timeSelect.innerHTML = "";
+
+    allowedTimes.forEach((timeValue) => {
+      const option = document.createElement("option");
+      option.value = timeValue;
+      option.textContent = timeValue;
+      timeSelect.appendChild(option);
+    });
+
+    if (!allowedTimes.includes(timeSelect.value)) {
+      timeSelect.value = allowedTimes[0];
+    }
+  };
 
   if (courseSelect && coursePreview) {
     const updatePreview = () => {
@@ -26,8 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     };
 
-    courseSelect.addEventListener("change", updatePreview);
+    courseSelect.addEventListener("change", () => {
+      updatePreview();
+      updateTimeOptions();
+    });
     updatePreview();
+    updateTimeOptions();
   }
 
   if (form) {
